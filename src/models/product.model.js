@@ -1,4 +1,3 @@
-"use strict";
 const { model, Schema } = require("mongoose"); // Erase if already required
 
 const DOCUMENT_NAME = "Product";
@@ -16,7 +15,7 @@ const productSchema = new Schema(
       required: true,
       enum: ["Electronic", "Clothing", "Furniture"],
     },
-    product_shop: { type: Schema.Types.ObjectId, ref: "Shop" },
+    // product_shop: { type: Schema.Types.ObjectId, ref: "Shop" },
     product_attributes: { type: Schema.Types.Mixed, required: true },
   },
   {
