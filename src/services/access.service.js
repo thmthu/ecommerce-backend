@@ -2,9 +2,9 @@
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const { getInforData } = require("../utils/index");
-const shopModel = require("../models/shop.model");
+const customerModel = require("../models/customer.model");
 const KeyTokenService = require("./key.service");
-const { findByEmail } = require("../services/shop.service");
+const { findByEmail } = require("../services/customer.service");
 const {
   ConflictRequestError,
   BadRequestError,
@@ -18,16 +18,16 @@ const RoleShop = {
 };
 class AccessService {
   static signIn = async ({ email, password, refreshToken = null }) => {
-    const foundShop = await findByEmail({ email });
-    console.log(foundShop.password);
+    const foundCustomer = await findByEmail({ email });
+    console.log(foundCustomer.password);
 
-    if (!foundShop) throw new BadRequestError("Shop is not registered");
-    const match = await bcrypt.compare(password, foundShop.password);
+    if (!foundCustomer) throw new BadRequestError("Customer is not registered");
+    const match = await bcrypt.compare(password, foundCustomer.password);
     if (!match) throw new BadRequestError("Wrong password");
     const privateKey = crypto.randomBytes(64).toString("hex");
     const publicKey = crypto.randomBytes(64).toString("hex");
     const tokens = await createTokenPair(
-      { userId: foundShop._id },
+      { userId: foundCustomer._id },
       publicKey,
       privateKey
     );
@@ -39,36 +39,36 @@ class AccessService {
     });
     return {
       metadata: {
-        shop: getInforData({
+        customer: getInforData({
           fields: ["id", "name", "email"],
-          object: foundShop,
+          object: foundCustomer,
         }),
         tokens,
       },
     };
   };
   static signUp = async ({ name, email, password }) => {
-    const hoderShop = await shopModel.findOne({ email }).lean();
+    const hoderCustomer = await customerModel.findOne({ email }).lean();
 
-    if (hoderShop) {
-      throw new ConflictRequestError("shop already register", 500);
+    if (hoderCustomer) {
+      throw new ConflictRequestError("customer already register", 500);
     }
 
     const passwordHash = await bcrypt.hash(password, 10);
-    const newShop = await shopModel.create({
+    const newCustomer = await customerModel.create({
       name,
       email,
       password: passwordHash,
       roles: [RoleShop.SHOP],
     });
-    if (!newShop) {
+    if (!newCustomer) {
       throw new Error("Failed to create new shop");
     }
-    if (newShop) {
+    if (newCustomer) {
       const publicKey = crypto.randomBytes(64).toString("hex");
       const privateKey = crypto.randomBytes(64).toString("hex");
       const keyStore = await KeyTokenService.createKeyToken({
-        userId: newShop._id,
+        userId: newCustomer._id,
         publicKey,
         privateKey,
       });
@@ -76,7 +76,7 @@ class AccessService {
         throw new ConflictRequestError("keyStore error", 500);
       }
       const tokens = await createTokenPair(
-        { userId: newShop._id, email },
+        { userId: newCustomer._id, email },
         publicKey,
         privateKey
       );
@@ -85,7 +85,7 @@ class AccessService {
         metadata: {
           shop: getInforData({
             fields: ["id", "name", "email"],
-            object: newShop,
+            object: newCustomer,
           }),
           tokens,
         },
