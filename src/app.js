@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: process.env.FRONTEND_BASE_URL, // Nguồn gốc frontend của bạn
+    origin: true, // Nguồn gốc frontend của bạn
     methods: ["GET", "POST", "OPTIONS"],
     allowedHeaders: ["Content-Type", "x-api-key"],
   })
