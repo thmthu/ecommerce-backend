@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const morgan = require("morgan");
 const compression = require("compression");
@@ -13,7 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: "http://127.0.0.1:5500", // Nguồn gốc frontend của bạn
+    origin: process.env.FRONTEND_BASE_URL, // Nguồn gốc frontend của bạn
     methods: ["GET", "POST", "OPTIONS"],
     allowedHeaders: ["Content-Type", "x-api-key"],
   })
