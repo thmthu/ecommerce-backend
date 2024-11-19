@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const morgan = require("morgan");
 const compression = require("compression");
@@ -17,6 +18,7 @@ app.use(
     methods: ["GET", "POST", "OPTIONS", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "x-api-key", "Authorization"],
     credentials: true,
+
   })
 );
 
