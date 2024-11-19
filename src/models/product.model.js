@@ -9,11 +9,13 @@ const productSchema = new Schema(
     product_thumb: { type: String, required: true },
     product_description: String,
     product_price: { type: Number, required: true },
+    product_color: { type: String, required: true },
+    product_size: { type: String, required: true },
     product_quantity: { type: Number, required: true },
     product_type: {
       type: String,
       required: true,
-      enum: ["Electronic", "Clothing", "Furniture"],
+      enum: ["MaleClothe", "FemaleClothe"],
     },
     // product_shop: { type: Schema.Types.ObjectId, ref: "Shop" },
     product_attributes: { type: Schema.Types.Mixed, required: true },
@@ -23,30 +25,26 @@ const productSchema = new Schema(
     collection: COLLECTION_NAME,
   }
 );
-const clothingSchema = new Schema(
+const maleClotheSchema = new Schema(
   {
     brand: { type: String, required: true },
-    size: String,
-    material: String,
   },
   {
     timestamps: true,
-    collection: "clothes",
+    collection: "male_clothes",
   }
 );
-const electronicSchema = new Schema(
+const femaleClotheSchema = new Schema(
   {
-    manufacturer: { type: String, required: true },
-    model: String,
-    color: String,
+    brand: { type: String, required: true },
   },
   {
     timestamps: true,
-    collection: "electronics",
+    collection: "female_clothes",
   }
 );
 module.exports = {
   product: model(DOCUMENT_NAME, productSchema),
-  electronic: model("Electronics", electronicSchema),
-  clothing: model("Clothing", clothingSchema),
+  femaleClothe: model("FemaleClothe", femaleClotheSchema),
+  maleClothe: model("MaleClothe", maleClotheSchema),
 };

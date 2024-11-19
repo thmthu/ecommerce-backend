@@ -1,13 +1,17 @@
 // "use strict";
-const { product, clothing, electronic } = require("../models/product.model");
+const {
+  product,
+  femaleClothe,
+  maleClothe,
+} = require("../models/product.model");
 const { BadRequestError, Forbiden } = require("../core/error.response");
 class ProductFactory {
   static async createProduct(type, payload) {
     switch (type) {
-      case "Electronic":
-        return new Electronics(payload).createProduct();
-      case "Clothing":
-        return new Clothing(payload).createProduct();
+      case "MaleClothe":
+        return new MaleClothe(payload).createProduct();
+      case "FemaleClothe":
+        return new FemaleClothe(payload).createProduct();
       default:
         throw new BadRequestError(`Invalid Product Types  ${type}`);
     }
@@ -26,6 +30,8 @@ class Product {
     product_thumb,
     product_description,
     product_price,
+    product_color,
+    product_size,
     product_quantity,
     product_type,
     // product_shop,
@@ -35,6 +41,8 @@ class Product {
     this.product_thumb = product_thumb;
     this.product_description = product_description;
     this.product_price = product_price;
+    this.product_color = product_color;
+    this.product_size = product_size;
     this.product_quantity = product_quantity;
     this.product_type = product_type;
     // this.product_shop = product_shop;
@@ -45,21 +53,22 @@ class Product {
   }
 }
 
-class Clothing extends Product {
+class FemaleClothe extends Product {
   async createProduct() {
-    const newClothing = await clothing.create(this.product_attributes);
-    if (!newClothing) throw new BadRequestError("create new Clothing error");
+    const newClothing = await femaleClothe.create(this.product_attributes);
+    if (!newClothing)
+      throw new BadRequestError("create new FemaleClothe error");
     const newProduct = await super.createProduct();
     if (!newProduct) throw new BadRequestError("create new Product error");
     return newProduct;
   }
 }
 
-class Electronics extends Product {
+class MaleClothe extends Product {
   async createProduct() {
-    const newElectronic = await electronic.create(this.product_attributes);
+    const newElectronic = await maleClothe.create(this.product_attributes);
     if (!newElectronic)
-      throw new BadRequestError("create new Electronic error");
+      throw new BadRequestError("create new MaleClothe error");
     const newProduct = await super.createProduct();
     if (!newProduct) throw new BadRequestError("create new Product error");
     return newProduct;
