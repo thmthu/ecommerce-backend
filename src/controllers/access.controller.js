@@ -1,10 +1,18 @@
 "use strict";
 
 const AccessService = require("../services/access.service");
-const { OK, CREATED } = require("../core/success.response");
+const { OK, CREATED, SuccessResponse } = require("../core/success.response");
 class AccessController {
+  logout = async (req, res, next) => {
+    console.log("logout controller")
+    console.log(req.keyStore)
+    new SuccessResponse({
+      message: 'logout success',
+      metadata: await AccessService.logout({ keyStore: req.keyStore }), // Truyền đối tượng keyStore đúng cách
+    }).send(res);
+  };
   signIn = async (req, res, next) => {
-    new CREATED({
+    new SuccessResponse({
       metadata: await AccessService.signIn(req.body),
     }).send(res);
   };

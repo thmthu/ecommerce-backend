@@ -17,20 +17,27 @@ const RoleShop = {
   ADMIN: "ADMIN",
 };
 class AccessService {
+  static logout = async ({ keyStore }) => {
+    console.log("logout ", keyStore)
+    const delKey = await KeyTokenService.removeByUserid(keyStore.userId);
+    console.log(delKey);
+    return delKey;
+  };
   static signIn = async ({ email, password, refreshToken = null }) => {
     const foundCustomer = await findByEmail({ email });
-    console.log(foundCustomer.password);
 
     if (!foundCustomer) throw new BadRequestError("Customer is not registered");
     const match = await bcrypt.compare(password, foundCustomer.password);
     if (!match) throw new BadRequestError("Wrong password");
     const privateKey = crypto.randomBytes(64).toString("hex");
     const publicKey = crypto.randomBytes(64).toString("hex");
+    const { _id: userId } = foundCustomer;
     const tokens = await createTokenPair(
-      { userId: foundCustomer._id },
+      { userId, email },
       publicKey,
       privateKey
     );
+    console.log("create ok!");
     await KeyTokenService.createKeyToken({
       userId,
       publicKey,
@@ -67,19 +74,21 @@ class AccessService {
     if (newCustomer) {
       const publicKey = crypto.randomBytes(64).toString("hex");
       const privateKey = crypto.randomBytes(64).toString("hex");
-      const keyStore = await KeyTokenService.createKeyToken({
-        userId: newCustomer._id,
-        publicKey,
-        privateKey,
-      });
-      if (!keyStore) {
-        throw new ConflictRequestError("keyStore error", 500);
-      }
       const tokens = await createTokenPair(
         { userId: newCustomer._id, email },
         publicKey,
         privateKey
       );
+      console.log("Creating key token for user:", newCustomer._id);
+      const keyStore = await KeyTokenService.createKeyToken({
+        userId: newCustomer._id,
+        publicKey,
+        privateKey,
+        refreshToken: tokens.refreshToken, // Đảm bảo truyền refreshToken
+      });
+      if (!keyStore) {
+        throw new ConflictRequestError("keyStore error", 500);
+      }
       return {
         code: 201,
         metadata: {

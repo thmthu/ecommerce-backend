@@ -41,7 +41,6 @@ class Product {
     this.product_attributes = product_attributes;
   }
   async createProduct() {
-    console.log("createProduct", this);
     return await product.create(this);
   }
 }

@@ -13,16 +13,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: "http://127.0.0.1:5500", // Nguồn gốc frontend của bạn
-    methods: ["GET", "POST", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "x-api-key"],
+    origin: true, // Tự động cho phép tất cả nguồn gốc dựa vào yêu cầu
+    methods: ["GET", "POST", "OPTIONS", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "x-api-key", "Authorization"],
+    credentials: true,
   })
 );
+
 require("./dbs/init.mongodb");
 
 app.use("/", require("./routes"));
 app.use((req, res, next) => {
-  const error = new Error("kooo Not found");
+  const error = new Error("Not found");
   error.status = 404;
   next(error);
 });
