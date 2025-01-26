@@ -17,7 +17,7 @@ const productSchema = new Schema(
       required: true,
       enum: ["MaleClothe", "FemaleClothe"],
     },
-    // product_shop: { type: Schema.Types.ObjectId, ref: "Shop" },
+    product_shop: { type: Schema.Types.ObjectId, ref: "Shop" },
     product_attributes: { type: Schema.Types.Mixed, required: true },
   },
   {

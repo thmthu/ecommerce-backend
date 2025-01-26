@@ -1,8 +1,8 @@
 "use strict";
 
 const mongoose = require("mongoose");
-const connectString =
-  "mongodb+srv://mitu:hihi@cluster0.tloz2.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const encodedPassword = encodeURIComponent("Tdt0301@");
+const connectString = `mongodb+srv://thututoe:${encodedPassword}@ecommerce.i45dz.mongodb.net/?retryWrites=true&w=majority&appName=ecommerce`;
 class Database {
   constructor() {
     this.connect();
