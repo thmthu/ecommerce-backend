@@ -40,9 +40,27 @@ class AuthFailureError extends ErrorResponse {
     super(message, status);
   }
 }
-class NotFoundError extends ErrorResponse{
-  constructor(message=ReasonPhrases.UNAUTHORIZED, statusCode=StatusCodes.UNAUTHORIZED){
-    super(message,statusCode)
+class NotFoundError extends ErrorResponse {
+  constructor(
+    message = ReasonPhrases.UNAUTHORIZED,
+    statusCode = StatusCodes.UNAUTHORIZED
+  ) {
+    super(message, statusCode);
   }
 }
-module.exports = { AuthFailureError, ConflictRequestError, BadRequestError ,NotFoundError};
+class ForbidenError extends ErrorResponse {
+  constructor(
+    message = ReasonPhrases.FORBIDDEN,
+    statusCode = StatusCodes.FORBIDDEN
+  ) {
+    super(message, statusCode);
+  }
+}
+module.exports = {
+  AuthFailureError,
+  ConflictRequestError,
+  BadRequestError,
+  NotFoundError,
+  ForbidenError
+};
+
