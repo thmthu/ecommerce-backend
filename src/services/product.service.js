@@ -42,7 +42,7 @@ class Product {
     product_size,
     product_quantity,
     product_type,
-    // product_shop,
+    product_shop,
     product_attributes,
   }) {
     this.product_name = product_name;
@@ -53,7 +53,7 @@ class Product {
     this.product_size = product_size;
     this.product_quantity = product_quantity;
     this.product_type = product_type;
-    // this.product_shop = product_shop;
+    this.product_shop = product_shop;
     this.product_attributes = product_attributes;
   }
   async createProduct() {
