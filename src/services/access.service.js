@@ -1,13 +1,19 @@
 "use strict";
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
+const JWT = require("jsonwebtoken");
+const { Type } = require("mongoose");
+const mongoose = require("mongoose");
+const { ObjectId } = mongoose.Types;
 const { getInforData } = require("../utils/index");
 const customerModel = require("../models/customer.model");
+const tokenModel = require("../models/keytoken.model");
 const KeyTokenService = require("./key.service");
 const { findByEmail } = require("../services/customer.service");
 const {
   ConflictRequestError,
   BadRequestError,
+  ForbidenError,
 } = require("../core/error.response");
 const { createTokenPair } = require("../auth/authUtils");
 const RoleShop = {
@@ -17,8 +23,49 @@ const RoleShop = {
   ADMIN: "ADMIN",
 };
 class AccessService {
+  static handleRefreshToken = async (refreshToken) => {
+    const checkTokenIsUsed = await tokenModel.findOne({
+      refreshTokensUsed: refreshToken,
+    });
+    if (checkTokenIsUsed) {
+      console.log("Checking");
+      const { userId, email } = await JWT.verify(
+        refreshToken,
+        checkTokenIsUsed.privateKey
+      );
+      await tokenModel.deleteOne(new ObjectId(userId));
+      throw new ForbidenError("Something went wrong, please try again");
+    }
+
+    const holderToken = await tokenModel.findOne({
+      refreshToken,
+    });
+    if (!holderToken) throw new ForbidenError("Invalid refreshToken");
+    const { userId, email } = await JWT.verify(
+      refreshToken,
+      holderToken.privateKey
+    );
+    if (!holderToken) throw new ForbidenError("Invalid refreshToken");
+    const tokens = await createTokenPair(
+      { userId, email },
+      holderToken.publicKey,
+      holderToken.privateKey
+    );
+    await holderToken.updateOne({
+      $set: {
+        refreshToken: tokens.refreshToken,
+      },
+      $addToSet: {
+        refreshTokensUsed: refreshToken,
+      },
+    });
+    return {
+      user: { userId, email },
+      tokens,
+    };
+  };
   static logout = async ({ keyStore }) => {
-    console.log("logout ", keyStore)
+    console.log("logout ", keyStore);
     const delKey = await KeyTokenService.removeByUserid(keyStore.userId);
     console.log(delKey);
     return delKey;

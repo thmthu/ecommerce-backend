@@ -8,5 +8,7 @@ router.post("/signup", asyncHandler(AccessController.signUp));
 router.post("/signin", asyncHandler(AccessController.signIn));
 router.use(authentication)
 router.post("/logout", asyncHandler(AccessController.logout));
+router.post("/handleRefreshToken", asyncHandler(AccessController.handleRefreshToken));
+
 
 module.exports = router;
