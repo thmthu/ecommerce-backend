@@ -17,7 +17,7 @@ const productSchema = new Schema(
       required: true,
       enum: ["MaleClothe", "FemaleClothe"],
     },
-    product_shop: { type: Schema.Types.ObjectId, ref: "Shop" },
+    product_shop: { type: Schema.Types.ObjectId, ref: "Customers" },
     product_attributes: { type: Schema.Types.Mixed, required: true },
   },
   {
@@ -28,6 +28,8 @@ const productSchema = new Schema(
 const maleClotheSchema = new Schema(
   {
     brand: { type: String, required: true },
+    material: { type: String },
+    pattern: { type: String },
   },
   {
     timestamps: true,
@@ -37,6 +39,8 @@ const maleClotheSchema = new Schema(
 const femaleClotheSchema = new Schema(
   {
     brand: { type: String, required: true },
+    material: { type: String },
+    pattern: { type: String },
   },
   {
     timestamps: true,
