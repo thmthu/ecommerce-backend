@@ -12,5 +12,6 @@ router.get(
   "/search/:keyword",
   asyncHandler(ProductController.getProductByNameOrDescription)
 );
+router.get("/draft/all", asyncHandler(ProductController.gettAllDraftForShop));
 
 module.exports = router;

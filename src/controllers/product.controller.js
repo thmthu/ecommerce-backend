@@ -31,5 +31,11 @@ class ProductController {
       metadata: await ProductService.findProductByNameOrDescript(keyword),
     }).send(res);
   };
+  gettAllDraftForShop = async (req, res, next) => {
+    new SuccessResponse({
+      message: "find all draft product success",
+      metadata: await ProductService.findAllDraftForShop({product_shop: req.user.userId}),
+    }).send(res);
+  };
 }
 module.exports = new ProductController();

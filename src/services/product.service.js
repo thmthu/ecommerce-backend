@@ -5,6 +5,7 @@ const {
   maleClothe,
 } = require("../models/product.model");
 const { BadRequestError, Forbiden } = require("../core/error.response");
+const { findAllDradtForShop } = require("../models/repositories/product.repo");
 class ProductFactory {
   static registered = {};
   static registeredType(typeName, typeSchema) {
@@ -17,19 +18,10 @@ class ProductFactory {
     }
     return new this.registered[type](payload).createProduct();
   }
-  static async getAllProducts() {
-    return await product.find();
-  }
-  static async getProductById(id) {
-    return await product.findById(id);
-  }
-  static async findProductByNameOrDescript(keyWords) {
-    return await product.find({
-      $or: [
-        { product_name: { $regex: keyWords, $options: "i" } },
-        { product_description: { $regex: keyWords, $options: "i" } },
-      ],
-    });
+  static async findAllDraftForShop({ product_shop, limit = 50, skip = 0 }) {
+    const query = { product_shop, isDraft: true };
+    console.log("Finding", product_shop);
+    return await findAllDradtForShop({ query, limit, skip });
   }
 }
 
@@ -42,7 +34,12 @@ class Product {
     product_color,
     product_size,
     product_quantity,
+    product_slug,
+    product_ratingAverage,
     product_type,
+    product_variations,
+    isDraft,
+    isPubliced,
     product_shop,
     product_attributes,
   }) {
@@ -53,7 +50,12 @@ class Product {
     this.product_color = product_color;
     this.product_size = product_size;
     this.product_quantity = product_quantity;
+    this.product_slug = product_slug;
+    this.product_ratingAverage = product_ratingAverage;
     this.product_type = product_type;
+    this.product_variations = product_variations;
+    this.isDraft = isDraft;
+    this.isPubliced = isPubliced;
     this.product_shop = product_shop;
     this.product_attributes = product_attributes;
   }
