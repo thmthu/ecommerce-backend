@@ -6,6 +6,7 @@ const {
 } = require("../models/product.model");
 const { BadRequestError, Forbiden } = require("../core/error.response");
 const { findAllDradtForShop } = require("../models/repositories/product.repo");
+const { insertInventory } = require("../models/repositories/invetory.repo");
 class ProductFactory {
   static registered = {};
   static registeredType(typeName, typeSchema) {
@@ -60,7 +61,15 @@ class Product {
     this.product_attributes = product_attributes;
   }
   async createProduct(product_id) {
-    return await product.create({ ...this, _id: product_id });
+    const newProduct = await product.create({ ...this, _id: product_id });
+    if (newProduct) {
+      await insertInventory({
+        productId: newProduct._id,
+        stock: this.product_quantity,
+        shopId: this.product_shop,
+      });
+    }
+    return newProduct;
   }
 }
 
@@ -70,6 +79,7 @@ class FemaleClothe extends Product {
     if (!newClothing)
       throw new BadRequestError("create new FemaleClothe error");
     const newProduct = await super.createProduct(newClothing._id);
+    console.log("===============", newProduct);
     if (!newProduct) throw new BadRequestError("create new Product error");
     return newProduct;
   }
