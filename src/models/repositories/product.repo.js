@@ -1,4 +1,5 @@
 "use strict";
+const { getSelectData } = require("../../utils");
 const { product, femaleClothe, maleClothe } = require("../product.model");
 
 const findAllDradtForShop = async ({ query, limit, skip }) => {
@@ -11,4 +12,19 @@ const findAllDradtForShop = async ({ query, limit, skip }) => {
     .lean()
     .exec();
 };
-module.exports = {findAllDradtForShop}
+const findAllProduct = async ({
+  filter,
+  limit,
+  page,
+  sort = "ctime",
+  select = "",
+}) => {
+  return await product
+    .find(filter)
+    .skip((page - 1) * limit)
+    .limit(limit)
+    .sort(sort)
+    .select(getSelectData(select))
+    .exec();
+};
+module.exports = { findAllDradtForShop, findAllProduct };

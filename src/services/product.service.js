@@ -24,6 +24,9 @@ class ProductFactory {
     console.log("Finding", product_shop);
     return await findAllDradtForShop({ query, limit, skip });
   }
+  static async getAllProducts() {
+    return await product.find({}).lean();
+  }
 }
 
 class Product {
