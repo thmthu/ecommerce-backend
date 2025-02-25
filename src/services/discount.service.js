@@ -146,7 +146,7 @@ class DiscountService {
       foundDiscount.discount_type == "fixed_amount"
         ? foundDiscount.discount_value
         : (foundDiscount.discount_value / 100) * total;
-    console.log("total", total);
+    console.log("total", total, "amount discount", amount);
     return {
       discount: amount,
       totalOrder: total,
