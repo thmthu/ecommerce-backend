@@ -14,9 +14,21 @@ const unGetSelectData = (unselect = []) => {
 const convertStringToObjectId = (str) => {
   return new ObjectId(str);
 };
+const promisify = (fn) => {
+  return (...args) => {
+    return new Promise((resolve, reject) => {
+      fn(...args, (err, result) => {
+        if (err) reject(err);
+        else resolve(result);
+      });
+    });
+  };
+};
+
 module.exports = {
   getInforData,
   convertStringToObjectId,
   getSelectData,
   unGetSelectData,
+  promisify,
 };
