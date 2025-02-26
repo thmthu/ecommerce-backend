@@ -1,5 +1,5 @@
 "use strict";
-const { getSelectData } = require("../../utils");
+const { getSelectData, convertStringToObjectId } = require("../../utils");
 const { product, femaleClothe, maleClothe } = require("../product.model");
 
 const findAllDradtForShop = async ({ query, limit, skip }) => {
@@ -27,4 +27,25 @@ const findAllProduct = async ({
     .select(getSelectData(select))
     .exec();
 };
-module.exports = { findAllDradtForShop, findAllProduct };
+const getProductById = async (productId) => {
+  return await product.findOne({ _id: convertStringToObjectId(productId) });
+};
+const checkProductByServer = async (products) => {
+  return await Promise.all(
+    products.map(async (product) => {
+      const foundProduct = await getProductById(product.productId);
+      if (foundProduct)
+        return {
+          price: product.product_price,
+          quantity: product.product_quantity,
+          productId: product.productId,
+        };
+    })
+  );
+};
+module.exports = {
+  findAllDradtForShop,
+  findAllProduct,
+  getProductById,
+  checkProductByServer,
+};
