@@ -32,6 +32,7 @@ const runProducer = async (notiInfor) => {
         expiration: 1000,
       }
     );
+
     console.log("ok 2");
 
     setTimeout(() => {
