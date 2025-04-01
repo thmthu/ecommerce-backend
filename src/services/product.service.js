@@ -8,6 +8,7 @@ const { BadRequestError, Forbiden } = require("../core/error.response");
 const { findAllDradtForShop } = require("../models/repositories/product.repo");
 const { insertInventory } = require("../models/repositories/invetory.repo");
 const { pushNotiToSys } = require("./notification.service");
+const runProducer = require("../message_queue/rabbitmq/producerDLX");
 class ProductFactory {
   static registered = {};
   static registeredType(typeName, typeSchema) {
@@ -72,16 +73,14 @@ class Product {
         stock: this.product_quantity,
         shopId: this.product_shop,
       });
-      pushNotiToSys({
+      runProducer({
         type: "SHOP-001",
         recieverId: 1,
         senderId: this.product_shop,
         option: {
           product_name: this.product_name,
         },
-      })
-        .then((res) => console.log("create product push noti: ", res))
-        .catch((err) => console.log("erro create product push noti: ", err));
+      });
     }
     return newProduct;
   }

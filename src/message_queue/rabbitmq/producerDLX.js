@@ -25,9 +25,13 @@ const runProducer = async (notiInfor) => {
 
     const msg = "a new product";
     console.log("ok 1");
-    await channel.sendToQueue(queueRes.queue, Buffer.from(notiInfor), {
-      expiration: 1000,
-    });
+    await channel.sendToQueue(
+      queueRes.queue,
+      Buffer.from(JSON.stringify(notiInfor)),
+      {
+        expiration: 1000,
+      }
+    );
     console.log("ok 2");
 
     setTimeout(() => {
@@ -39,4 +43,4 @@ const runProducer = async (notiInfor) => {
   }
 };
 
-runProducer();
+module.exports = runProducer;
